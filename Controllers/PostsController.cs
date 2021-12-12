@@ -8,7 +8,7 @@ using training_api.Services;
 namespace training_api.Controllers
 {
     [Route("api/posts")]
-    public class PostsController : Controller
+    public class PostsController : ControllerBase
     {
         private readonly IPostService _service;
 
