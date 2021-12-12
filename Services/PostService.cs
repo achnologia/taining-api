@@ -1,69 +1,65 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
+using training_api.Data;
 using training_api.Domain;
 
 namespace training_api.Services
 {
     public class PostService : IPostService
     {
-        private List<Post> _posts;
-        public PostService()
-        {
-            _posts = new();
+        private readonly DataContext _dataContext;
 
-            for (var i = 0; i < 5; i++)
-            {
-                _posts.Add(new Post 
-                { 
-                    Id = Guid.NewGuid(), 
-                    Name = $"Post-{i}" 
-                });
-            }
+        public PostService(DataContext dataContext)
+        {
+            _dataContext = dataContext;
         }
 
-        public IEnumerable<Post> GetAllAsync()
+        public async Task<IEnumerable<Post>> GetAllAsync()
         {
-            return _posts;
+            return await _dataContext.Posts.ToListAsync();
         }
 
-        public Post GetByIdAsync(Guid id)
+        public async Task<Post> GetByIdAsync(Guid idPost)
         {
-            var post = _posts.SingleOrDefault(x => x.Id == id);
+            var post = await _dataContext.Posts.SingleOrDefaultAsync(x => x.Id == idPost);
 
             return post;
         }
 
-        public Guid CreateAsync(Post newPost)
+        public async Task<Guid> CreateAsync(Post newPost)
         {
-            _posts.Add(newPost);
+            await _dataContext.Posts.AddAsync(newPost);
+            await _dataContext.SaveChangesAsync();
 
             return newPost.Id;
         }
 
-        public bool UpdateAsync(Post postToUpdate)
+        public async Task<bool> UpdateAsync(Post postToUpdate)
         {
-            var exists = GetByIdAsync(postToUpdate.Id);
+            var post = await GetByIdAsync(postToUpdate.Id);
 
-            if (exists == null)
+            if (post == null)
                 return false;
 
-            var index = _posts.FindIndex(post => post.Id == postToUpdate.Id);
-            _posts[index] = postToUpdate;
+            _dataContext.Posts.Update(postToUpdate);
+            var updated = await _dataContext.SaveChangesAsync();
 
-            return true;
+            return updated > 0;
         }
 
-        public bool DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid idPost)
         {
-            var exists = GetByIdAsync(id);
+            var post = await GetByIdAsync(idPost);
 
-            if (exists == null)
+            if (post == null)
                 return false;
 
-            _posts.Remove(exists);
+            _dataContext.Posts.Remove(post);
+            var deleted = await _dataContext.SaveChangesAsync();
 
-            return true;
+            return deleted > 0;
         }
     }
 }

@@ -9,10 +9,10 @@ namespace training_api.Services
 {
     public interface IPostService
     {
-        IEnumerable<Post> GetAllAsync();
-        Post GetByIdAsync(Guid id);
-        Guid CreateAsync(Post newPost);
-        bool UpdateAsync(Post postToUpdate);
-        bool DeleteAsync(Guid id);
+        Task<IEnumerable<Post>> GetAllAsync();
+        Task<Post> GetByIdAsync(Guid idPost);
+        Task<Guid> CreateAsync(Post newPost);
+        Task<bool> UpdateAsync(Post postToUpdate);
+        Task<bool> DeleteAsync(Guid idPost);
     }
 }

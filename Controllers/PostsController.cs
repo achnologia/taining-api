@@ -20,7 +20,7 @@ namespace training_api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPosts()
         {
-            var posts = _service.GetAllAsync();
+            var posts = await _service.GetAllAsync();
 
             return Ok(posts);
         }
@@ -28,7 +28,7 @@ namespace training_api.Controllers
         [HttpGet("{idPost}")]
         public async Task<IActionResult> GetPostById([FromRoute] string idPost)
         {
-            var post = _service.GetByIdAsync(Guid.Parse(idPost));
+            var post = await _service.GetByIdAsync(Guid.Parse(idPost));
 
             if(post == null)
                 return NotFound();
@@ -39,21 +39,15 @@ namespace training_api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromBody] CreatePostRequest request)
         {
-            if(string.IsNullOrEmpty(request.Id))
-            {
-                request.Id = Guid.NewGuid().ToString();
-            }
-
             var newPost = new Post
             {
-                Id = Guid.Parse(request.Id),
                 Name = request.Name
             };
 
-            _service.CreateAsync(newPost);
+            var idCreated = await _service.CreateAsync(newPost);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUrl = $"{baseUrl}/api/posts/{request.Id}";
+            var locationUrl = $"{baseUrl}/api/posts/{idCreated}";
 
             return Created(locationUrl, request);
         }
@@ -67,7 +61,7 @@ namespace training_api.Controllers
                 Name = request.Name
             };
 
-            var updated = _service.UpdateAsync(postToUpdate);
+            var updated = await _service.UpdateAsync(postToUpdate);
 
             if(!updated)
                 return NotFound();
@@ -78,7 +72,7 @@ namespace training_api.Controllers
         [HttpDelete("{idPost}")]
         public async Task<IActionResult> DeletePost([FromRoute] string idPost)
         {
-            var deleted = _service.DeleteAsync(Guid.Parse(idPost));
+            var deleted = await _service.DeleteAsync(Guid.Parse(idPost));
 
             if(!deleted)
                 return NotFound();

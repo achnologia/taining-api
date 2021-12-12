@@ -8,8 +8,7 @@ namespace training_api.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            // Singleton because there is a list of Post in the service for testing purposes
-            services.AddSingleton<IPostService, PostService>();
+            services.AddScoped<IPostService, PostService>();
         }
     }
 }
