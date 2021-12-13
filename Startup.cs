@@ -47,7 +47,7 @@ namespace training_api
             }
 
             var swaggerOptions = new SwaggerOptions();
-            Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
+            Configuration.Bind(nameof(SwaggerOptions), swaggerOptions);
 
             app.UseSwagger(options =>
             {
@@ -62,7 +62,11 @@ namespace training_api
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseAuthentication();
+
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

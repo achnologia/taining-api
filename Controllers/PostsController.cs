@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using training_api.Contacts.Requests;
@@ -7,6 +8,7 @@ using training_api.Services;
 
 namespace training_api.Controllers
 {
+    //[Authorize]
     [Route("api/posts")]
     public class PostsController : ControllerBase
     {
