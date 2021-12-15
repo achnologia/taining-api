@@ -32,7 +32,7 @@ namespace training_api.Controllers
         {
             var post = await _service.GetByIdAsync(Guid.Parse(idPost));
 
-            if(post == null)
+            if(post is null)
                 return NotFound();
 
             return Ok(post);

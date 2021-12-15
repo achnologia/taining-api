@@ -40,7 +40,7 @@ namespace training_api.Services
         {
             var post = await GetByIdAsync(postToUpdate.Id);
 
-            if (post == null)
+            if (post is null)
                 return false;
 
             _dataContext.Posts.Update(postToUpdate);
@@ -53,7 +53,7 @@ namespace training_api.Services
         {
             var post = await GetByIdAsync(idPost);
 
-            if (post == null)
+            if (post is null)
                 return false;
 
             _dataContext.Posts.Remove(post);
