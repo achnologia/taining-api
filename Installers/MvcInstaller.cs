@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.Text;
 using training_api.Options;
+using training_api.Services;
 
 namespace training_api.Installers
 {
@@ -16,6 +17,9 @@ namespace training_api.Installers
             var jwtOptions = new JwtOptions();
             configuration.Bind(nameof(jwtOptions), jwtOptions);
             services.AddSingleton(jwtOptions);
+
+            services.AddScoped<ITokenService, JwtTokenService>();
+            services.AddScoped<IIdentityService, IdentityService>();
 
             services.AddControllersWithViews();
 

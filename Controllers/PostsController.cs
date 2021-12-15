@@ -8,7 +8,7 @@ using training_api.Services;
 
 namespace training_api.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/posts")]
     public class PostsController : ControllerBase
     {
