@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using training_api.Contacts.Requests;
 using training_api.Domain;
+using training_api.Extensions;
 using training_api.Services;
 
 namespace training_api.Controllers
@@ -43,7 +44,8 @@ namespace training_api.Controllers
         {
             var newPost = new Post
             {
-                Name = request.Name
+                Name = request.Name,
+                IdAuthor = HttpContext.GetIdUser()
             };
 
             var idCreated = await _service.CreateAsync(newPost);
@@ -55,13 +57,17 @@ namespace training_api.Controllers
         }
 
         [HttpPut("{idPost}")]
-        public async Task<IActionResult> UpdatePost([FromRoute] string idPost, [FromBody] UpdatePostRequest request)
+        public async Task<IActionResult> UpdatePost([FromRoute] Guid idPost, [FromBody] UpdatePostRequest request)
         {
-            var postToUpdate = new Post
+            var isAuthor = await _service.IsUserPostAuthor(idPost, HttpContext.GetIdUser());
+
+            if (!isAuthor)
             {
-                Id = Guid.Parse(idPost),
-                Name = request.Name
-            };
+                return BadRequest(new { error = "You are not the author of the post." });
+            }
+
+            var postToUpdate = await _service.GetByIdAsync(idPost);
+            postToUpdate.Name = request.Name;
 
             var updated = await _service.UpdateAsync(postToUpdate);
 
@@ -72,9 +78,16 @@ namespace training_api.Controllers
         }
 
         [HttpDelete("{idPost}")]
-        public async Task<IActionResult> DeletePost([FromRoute] string idPost)
+        public async Task<IActionResult> DeletePost([FromRoute] Guid idPost)
         {
-            var deleted = await _service.DeleteAsync(Guid.Parse(idPost));
+            var isAuthor = await _service.IsUserPostAuthor(idPost, HttpContext.GetIdUser());
+
+            if (!isAuthor)
+            {
+                return BadRequest(new { error = "You are not the author of the post." });
+            }
+
+            var deleted = await _service.DeleteAsync(idPost);
 
             if(!deleted)
                 return NotFound();

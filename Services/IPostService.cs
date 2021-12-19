@@ -14,5 +14,6 @@ namespace training_api.Services
         Task<Guid> CreateAsync(Post newPost);
         Task<bool> UpdateAsync(Post postToUpdate);
         Task<bool> DeleteAsync(Guid idPost);
+        Task<bool> IsUserPostAuthor(Guid idPost, string idUser);
     }
 }

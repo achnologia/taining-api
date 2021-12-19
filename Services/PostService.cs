@@ -61,5 +61,18 @@ namespace training_api.Services
 
             return deleted > 0;
         }
+
+        public async Task<bool> IsUserPostAuthor(Guid idPost, string idUser)
+        {
+            var post = await _dataContext.Posts.AsNoTracking().SingleOrDefaultAsync(x => x.Id == idPost);
+
+            if (post is null)
+                return false;
+
+            if (post.IdAuthor != idUser)
+                return false;
+
+            return true;
+        }
     }
 }
