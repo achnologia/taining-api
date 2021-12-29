@@ -1,6 +1,6 @@
-﻿namespace training_api.Contacts.Responses
+﻿namespace training_api.Contacts.Requests
 {
-    public class AuthenticationSuccessResponse
+    public class RefreshTokenRequest
     {
         public string Token { get; set; }
         public string RefreshToken { get; set; }
